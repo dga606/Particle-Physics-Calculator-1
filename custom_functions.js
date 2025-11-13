@@ -11,6 +11,12 @@ export function setMassesData(masses) {
     globalMassesData = masses;
 }
 
+function sum(arr, func = x => x) {
+    if (!Array.isArray(arr)) throw new Error("Sum function requires a list variable.");
+    return arr.reduce((acc, x) => acc + func(x), 0);
+}
+
+
 export const customFunctions = {
     
     /**
@@ -42,6 +48,9 @@ export const customFunctions = {
         }
         throw new Error(`Mass for particle '${key}' not found or is invalid.`);
     },
+    
+    
+    
     
     
     
@@ -82,8 +91,8 @@ export const customFunctions = {
     },
     
     TwoParticleDecayEnergy: (m, m1, m2, n) => {
-        if (m <= m1 + m2) {
-            throw new Error("Decay is forbidden or results in zero kinetic energy (m ≤ m1 + m2).");
+        if (m < m1 + m2) {
+            throw new Error("Decay is forbidden or results in zero kinetic energy (m < m1 + m2).");
         }
         if (m === 0) {
             throw new Error("Parent mass (m) cannot be zero for this calculation.");
@@ -105,6 +114,26 @@ export const customFunctions = {
             throw new Error("Argument 'n' must be 1 (for E1) or 2 (for E2).");
         }
 
+        return numerator / (2 * m);
+    },
+    
+    DecayProductMaxEnergy: (m, m1, list) => { 
+        const M = sum(list);
+        
+        
+        if (m < m1 + M) {
+            throw new Error("Decay is forbidden or results in zero kinetic energy (m < m1 + M).");
+        }
+        if (m === 0) {
+            throw new Error("Parent mass (m) cannot be zero for this calculation.");
+        }
+
+        const mSq = m * m;
+        const m1Sq = m1 * m1;
+        const MSq = M * M;
+        
+        const numerator = mSq + m1Sq - MSq;
+        
         return numerator / (2 * m);
     }
     
