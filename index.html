@@ -53,8 +53,8 @@
 
     <div id="app" class="w-full max-w-4xl bg-white shadow-2xl rounded-xl">
         <header class="p-6 bg-primary rounded-t-xl">
-            <h1 class="text-3xl font-extrabold text-white text-center">Scientific Calculator</h1>
-            <p class="text-sm text-indigo-200 text-center mt-1">Use constants (e_, c), lists (Leptons), and masses (m("p")) in expressions.</p>
+            <h1 class="text-3xl font-extrabold text-white text-center">Scientific Calculator for Particle Physics</h1>
+            <p class="text-sm text-indigo-200 text-center mt-1">Created by DGA</p>
         </header>
       <div class="p-6 space-y-6">
 
@@ -83,6 +83,12 @@
                 
                 <!-- Functions List -->
                 <div class="lg:col-span-1">
+                    <h2 class="text-xl font-semibold text-gray-700 border-b pb-2">Math Functions</h2>
+                    <div id="math-functions-list" class="space-x-1 space-y-2 mt-4">
+                         <p class="text-gray-400">Loading functions...</p>
+                    </div>
+                </div>
+                <div class="lg:col-span-1">
                     <h2 class="text-xl font-semibold text-gray-700 border-b pb-2">Custom Functions</h2>
                     <div id="functions-list" class="space-y-2 mt-4">
                          <p class="text-gray-400">Loading functions...</p>
@@ -92,14 +98,19 @@
                 <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <h2 class="text-xl font-semibold text-gray-700 border-b pb-2">Single Constants</h2>
-                        <div id="constants-list" class="grid grid-cols-1 gap-4 mt-4">
+                        <div id="constants-list" class="grid grid-cols-2 gap-4 mt-4">
                             <p class="text-gray-400">Loading constants...</p>
+                        </div>
+                    
+                        <h2 class="text-xl font-semibold text-gray-700 border-b pb-2">Lists</h2>
+                        <div id="lists-display" class="space-y-4 mt-4">
+                             <p class="text-gray-400">Loading lists...</p>
                         </div>
                     </div>
                     <div>
-                        <h2 class="text-xl font-semibold text-gray-700 border-b pb-2">Lists & Masses</h2>
-                        <div id="lists-masses-display" class="space-y-4 mt-4">
-                             <p class="text-gray-400">Loading lists and masses...</p>
+                        <h2 class="text-xl font-semibold text-gray-700 border-b pb-2">Masses</h2>
+                        <div id="masses-list-display" class="space-y-4 mt-4">
+                             <p class="text-gray-400">Loading masses...</p>
                         </div>
                     </div>
                 </div>
