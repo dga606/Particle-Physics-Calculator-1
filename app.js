@@ -232,7 +232,7 @@ function renderVariables(constants, lists, customFuncs, masses) {
 
 // hotkeys for entering functions and other variables to input area
 
-function insertTextAtCursor( textToInsert, input_element='expression-input') {
+function insertTextAtCursor( textToInsert, input_element='expression-input', take_in_para=true) {
   // 1. Get the input element
   const input = document.getElementById(input_element);
   
@@ -258,7 +258,13 @@ function insertTextAtCursor( textToInsert, input_element='expression-input') {
 
   // 6. Calculate the new cursor position
   // The cursor should be moved forward by the length of the text we inserted.
-  const newCursorPos = startPos + textToInsert.length;
+  let newCursorPos = startPos + textToInsert.length;
+    
+  if (take_in_para) {
+      if (textToInsert[textToInsert.length - 1]==")" && textToInsert[textToInsert.length-2]=="(") {
+          newCursorPos = newCursorPos - 1;
+      }
+  }
 
   // 7. Set the cursor position (must be done *after* changing the value)
   // We use a small timeout to ensure the DOM has fully updated, which is safer for cursor manipulation.
