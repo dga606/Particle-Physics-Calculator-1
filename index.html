@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Local Scientific Calculator</title>
+    
     <!--<link rel="icon" type="image/png" href="/icon.png"> -->
     <link rel="icon" type="image/x-icon" href="icon.ico">
     <!-- Load Tailwind CSS -->
@@ -37,6 +38,22 @@
             margin-right: 4px;
             margin-bottom: 4px;
         }
+        
+        .floating-div {
+      position: fixed; /* Fixed position relative to the viewport */
+      bottom: 500px; /* Distance from the top of the viewport */
+      left: 50%; /* Center it horizontally */
+      transform: translateX(-50%); /* Fine-tune centering */
+      
+      padding: 10px 20px;
+      border-radius: 5px;
+      z-index: 1000; /* Ensure it appears on top of other content */
+    }
+
+  
+    
+    
+    
     </style>
     <script>
         tailwind.config = {
@@ -65,7 +82,7 @@
                 <!-- Expression Input -->
                 <input type="text" id="expression-input" placeholder="Evaluate here..."
                        class="w-full p-4 text-2xl font-mono text-gray-800 focus:outline-none focus:ring-2 focus:ring-secondary border-none"
-                       autocomplete="off" onkeydown="handleKey(event)">
+                    autocomplete="off" onkeydown="handleKey(event)" focus="preventScroll:true focusVisible:true">
                 
                 <!-- Result Display -->
                 <div id="result-display" class="p-4 text-xl font-bold text-gray-900 border-t-2 border-gray-200 flex justify-between items-center">
