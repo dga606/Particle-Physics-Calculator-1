@@ -12,6 +12,9 @@ let parsedConstants = {};
 let parsedListVariables = {};
 let parsedMasses = {};
 
+
+let elementToRestore = null;
+
 // --- Initialization and Parsing ---
 
 function parseConstants(constantsObj) {
@@ -82,11 +85,19 @@ function getExecutionContext(constants, lists, customFuncs, masses) {
     const standardMath = {
         // Expose Math object methods globally
         Math: Math,
-        sin: Math.sin, cos: Math.cos, tan: Math.tan, 
+        sin: (ang) => {
+            return parseFloat(Math.sin(ang).toFixed(15));
+        },
+        cos: (ang) => {
+            return parseFloat(Math.cos(ang).toFixed(15));
+        },
+        tan: (ang) => {
+            return parseFloat(Math.tan(ang).toFixed(15));
+        },        
         arcsin: Math.asin, arccos: Math.acos, arctan: Math.atan, 
         log: Math.log, log10: Math.log10, exp: Math.exp, 
         sqrt: Math.sqrt, abs: Math.abs, pow: Math.pow,
-        PI: Math.PI, E: Math.E,
+        PI: Math.PI, E: Math.E, "π": Math.PI, pi:Math.PI
     };
 
     return {
@@ -105,8 +116,8 @@ function getExecutionContext(constants, lists, customFuncs, masses) {
 
 const mathFunctions = [
     ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9","+", "-", "*", "/", "^", "(", ")", "[", "]"],
-    ["sin()", "cos()", "tan()","arcsin()", "arccos()", "arctan()"],
-    ["log()", "log10()", "exp()", "sqrt()", "abs()", "pow()"],
+    ["sin()", "cos()", "tan()","arcsin()", "arccos()", "arctan()", "π"],
+    ["log()", "log10()", "exp()", "sqrt()", "abs()", "pow()", "E"],
     ["sum()", "product()"]
 ]
 
@@ -124,6 +135,8 @@ function renderVariables(constants, lists, customFuncs, masses) {
     for (const [key, value] of Object.entries(constants)) {
         const constantCard = document.createElement('button');
         constantCard.onclick = function() { insertTextAtCursor(`${key}`)};
+        constantCard.onmousedown= saveFocus ;
+        constantCard.ontouchstart=saveFocus;
         constantCard.className = 'w-32 p-3 bg-indigo-50 rounded-lg border border-gray-200 shadow-sm transition duration-200 transform active:scale-75 active:bg-gray-100 active:shadow-inner';
         constantCard.innerHTML = `
             <p class="text-sm font-medium text-gray-900" >${key}:</p>
@@ -140,6 +153,8 @@ function renderVariables(constants, lists, customFuncs, masses) {
     // Lists Content (Displays the calculated values in the list)
     for (const [key, values] of Object.entries(lists)) {
         const listCard = document.createElement('button');
+        listCard.onmousedown= saveFocus ;
+        listCard.ontouchstart=saveFocus;
         listCard.className = 'p-4 bg-gray-50 rounded-lg border border-gray-200 shadow-sm mb-4 transition duration-200 transform active:scale-75 active:bg-gray-100 active:shadow-inner';
         
         // Find the original string list for display clarity
@@ -174,6 +189,8 @@ function renderVariables(constants, lists, customFuncs, masses) {
     keysToDisplay.forEach(key => {
         const massEntry = document.createElement('button');
         massEntry.onclick = function() { insertTextAtCursor(`m(\"${key}\")`)};
+        massEntry.onmousedown= saveFocus ;
+        massEntry.ontouchstart=saveFocus;
          massEntry.className = 'p-2 bg-indigo-50 rounded-md border border-indigo-200 text-sm shadow-sm transition duration-200 transform active:scale-75 active:bg-indigo-10 active:shadow-inner';
          massEntry.innerHTML = `
              <span class="font-medium text-indigo-700">m(\"${key}\"):</span>
@@ -201,6 +218,8 @@ function renderVariables(constants, lists, customFuncs, masses) {
     for (const [index,key] of Object.entries(mathFuncSet)) {
          const funcCard = document.createElement('button');
         funcCard.onclick = function() { insertTextAtCursor(`${key}`)};
+        funcCard.onmousedown= saveFocus ;
+        funcCard.ontouchstart=saveFocus;
         funcCard.className = 'min-w-7 p-2 bg-indigo-50 rounded-lg border border-indigo-200 shadow-sm transition duration-200 transform active:scale-75 active:bg-gray-100 active:shadow-inner';
         // Attempt to extract arguments for display
         //const argsMatch = func.toString().match(/\((.*?)\)/);
@@ -219,6 +238,8 @@ function renderVariables(constants, lists, customFuncs, masses) {
     for (const [key, func] of Object.entries(customFuncs)) {
          const funcCard = document.createElement('button');
         funcCard.onclick = function() { insertTextAtCursor(`${key}()`)};
+        funcCard.onmousedown= saveFocus;
+        funcCard.ontouchstart=saveFocus;
         funcCard.className = 'p-2 bg-indigo-50 rounded-lg border border-indigo-200 shadow-sm transition duration-200 transform active:scale-75 active:bg-gray-100 active:shadow-inner';
         // Attempt to extract arguments for display
         const argsMatch = func.toString().match(/\((.*?)\)/);
@@ -231,6 +252,21 @@ function renderVariables(constants, lists, customFuncs, masses) {
 }
 
 // hotkeys for entering functions and other variables to input area
+
+function saveFocus() {
+    // Check if the currently active element is our target input
+    // The browser hasn't yet processed the full click/tap and shifted focus.
+    const inputElement = document.getElementById('expression-input');
+    if (document.activeElement === inputElement) {
+        elementToRestore = inputElement;
+    } else {
+        // Clear the reference if the input wasn't the active element
+        elementToRestore = null; 
+    }
+}
+
+
+
 
 function insertTextAtCursor( textToInsert, input_element='expression-input', take_in_para=true) {
   // 1. Get the input element
@@ -272,8 +308,11 @@ function insertTextAtCursor( textToInsert, input_element='expression-input', tak
     input.selectionStart = newCursorPos;
     input.selectionEnd = newCursorPos;
     // Bring focus back to the input field so the user can keep typing immediately
-    input.focus(); 
+    //input.focus({ preventScroll:true, focusVisible: true});
+    elementToRestore.focus({ preventScroll:true, focusVisible: true});
+      
   }, 0);
+    
 }
 
 
@@ -327,6 +366,8 @@ function handleKey(event) {
         calculate();
         event.preventDefault();
     }
+    
+    
 }
 
 // --- Application Setup (Runs on load) ---
